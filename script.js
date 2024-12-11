@@ -1,67 +1,35 @@
-let display = document.getElementById('display');
-let buttons = document.querySelectorAll('button');
-
-let firstNumber = '';
-let secondNumber = '';
-let operator = '';
+const display = document.getElementById('display');
+const buttons = document.querySelectorAll('.buttons button');
 
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        let value = button.textContent;
+        const buttonId = button.id;
+        const buttonValue = button.textContent;
 
-        if (value === 'C') {
-            firstNumber = '';
-            secondNumber = '';
-            operator = '';
-            display.value = '';
-        } else if (value === '&larr;') {
-            if (firstNumber !== '') {
-                firstNumber = firstNumber.slice(0, -1);
-                display.value = firstNumber;
-            } else if (secondNumber !== '') {
-                secondNumber = secondNumber.slice(0, -1);
-                display.value = secondNumber;
+        if (buttonId === 'clear')
+            {
+                display.value = '';
+            } else if (buttonId === 'backspace') 
+                {
+                    display.value = display.value.slice(0, -1);
+        } else if (buttonId === 'equals') {
+            try {
+                display.value = eval(display.value.replace('÷', '/').replace('×', '*'));
+            } catch {
+                display.value = 'Error';
             }
-        } else if (['+', '-', '&times;', '&divide;'].includes(value)) {
-            operator = value;
-            firstNumber = display.value;
-            display.value = '';
-        } else if (value === '&equals;') {
-            secondNumber = display.value;
-            let result = calculate(firstNumber, operator, secondNumber);
-            display.value = result;
-            firstNumber = '';
-            secondNumber = '';
-            operator = '';
         } else {
-            if (operator === '') {
-                firstNumber += value;
-                display.value = firstNumber;
+            if (buttonId === 'divide') {
+                display.value += '/';
+            } else if (buttonId === 'multiply') {
+                display.value += '*';
+            } else if (buttonId === 'subtract') {
+                display.value += '-';
+            } else if (buttonId === 'add') {
+                display.value += '+';
             } else {
-                secondNumber += value;
-                display.value = secondNumber;
+                display.value += buttonValue;
             }
         }
     });
 });
-
-function calculate(num1, op, num2) 
-{
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-
-    switch (op) {
-        case '+':
-            return num1 + num2;
-        case '-':
-            return num1 - num2;
-        case '&times;':
-            return num1 * num2;
-        case '&divide;':
-            if (num2 !== 0) {
-                return num1 / num2;
-            } else {
-                return 'Error';
-            }
-    }
-}
